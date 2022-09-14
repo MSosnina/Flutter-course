@@ -1,4 +1,4 @@
-package com.example.list_view
+package com.example.dinamyc_list_view
 
 import io.flutter.embedding.android.FlutterActivity
 
