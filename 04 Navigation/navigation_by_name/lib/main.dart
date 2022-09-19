@@ -17,6 +17,10 @@ class MyApp extends StatelessWidget {
         ),
         body: HomePage(),
       ),
+      initialRoute: '/page2',
+      routes: {
+        '/page2': (context) => Page2(),
+      },
     );
   }
 }
@@ -25,11 +29,9 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: TextButton(
-          onPressed: () {
-            Route route = MaterialPageRoute(builder: (context) => Page2());
-            Navigator.push(context, route);
-          },
+      child: TextButton(onPressed: (){
+        Navigator.pushNamed(context, '/page2');
+      },
           child: Text('Move to Page 2')),
     );
   }
@@ -44,7 +46,7 @@ class Page2 extends StatelessWidget {
       ),
       body: Center(
         child: TextButton(
-          onPressed: () {
+          onPressed: (){
             Navigator.pop(context);
           },
           child: Text('Go Back'),
