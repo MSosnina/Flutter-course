@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/src/material/material_state.dart';
 
 class RegisterFormPage extends StatefulWidget {
@@ -9,19 +10,21 @@ class RegisterFormPage extends StatefulWidget {
 class _RegisterFormPageState extends State<RegisterFormPage> {
   bool _hidePass = true;
 
-  final _nameController        = TextEditingController();
-  final _phoneController       = TextEditingController();
-  final _emailController       = TextEditingController();
-  final _storyController       = TextEditingController();
-  final _passController        = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+
+  final _nameController = TextEditingController();
+  final _phoneController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _storyController = TextEditingController();
+  final _passController = TextEditingController();
   final _confirmPassController = TextEditingController();
 
   @override
-  void dispose(){
+  void dispose() {
     _nameController.dispose();
     _phoneController.dispose();
     _emailController.dispose();
-    _storyController .dispose();
+    _storyController.dispose();
     _passController.dispose();
     _confirmPassController.dispose();
 
@@ -36,10 +39,11 @@ class _RegisterFormPageState extends State<RegisterFormPage> {
         centerTitle: true,
       ),
       body: Form(
+        key: _formKey,
         child: ListView(
           padding: EdgeInsets.all(16),
           children: [
-            TextField(
+            TextFormField(
               controller: _nameController,
               decoration: InputDecoration(
                 labelText: 'Full Name *',
@@ -56,6 +60,8 @@ class _RegisterFormPageState extends State<RegisterFormPage> {
                     borderRadius: BorderRadius.all(Radius.circular(20)),
                     borderSide: BorderSide(color: Colors.blue, width: 2)),
               ),
+              //validator: (val) => (val!.isEmpty) ? 'Named is required' :null,
+              validator: _validateName,
             ),
             SizedBox(height: 10),
             TextFormField(
@@ -81,10 +87,10 @@ class _RegisterFormPageState extends State<RegisterFormPage> {
             TextFormField(
                 controller: _emailController,
                 decoration: InputDecoration(
-              labelText: 'Email Address',
-              hintText: 'Enter an email address',
-              icon: Icon(Icons.mail),
-            )),
+                  labelText: 'Email Address',
+                  hintText: 'Enter an email address',
+                  icon: Icon(Icons.mail),
+                )),
             SizedBox(height: 20),
             TextFormField(
               controller: _storyController,
@@ -95,6 +101,9 @@ class _RegisterFormPageState extends State<RegisterFormPage> {
                 border: OutlineInputBorder(),
               ),
               maxLines: 3,
+              inputFormatters: [
+                LengthLimitingTextInputFormatter(100),
+              ],
             ),
             SizedBox(height: 10),
             TextFormField(
@@ -137,10 +146,24 @@ class _RegisterFormPageState extends State<RegisterFormPage> {
     );
   }
 
-  void _submitForm(){
-    print('Name: ${_nameController.text}');
-    print('Phone: ${_phoneController.text}');
-    print('Email: ${_emailController.text}');
-    print('Story: ${_storyController.text}');
+  void _submitForm() {
+    if (_formKey.currentState!.validate()) {
+      print("Form is valid");
+      print('Name: ${_nameController.text}');
+      print('Phone: ${_phoneController.text}');
+      print('Email: ${_emailController.text}');
+      print('Story: ${_storyController.text}');
+    }
+  }
+
+  String? _validateName(String? value) {
+    final nameExp = RegExp(r'[!@#<>?":_`~;[\]\\|=+)(*&^%0-9-]');
+    if (value == '') {
+      return "Name is required.";
+    } else if (nameExp.hasMatch(value!)) {
+      return 'Please enter alphabetical characters.';
+    } else {
+      return null;
+    }
   }
 }
