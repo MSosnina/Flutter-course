@@ -82,6 +82,17 @@ class _RegisterFormPageState extends State<RegisterFormPage> {
                     borderRadius: BorderRadius.all(Radius.circular(20)),
                     borderSide: BorderSide(color: Colors.blue, width: 2)),
               ),
+              keyboardType: TextInputType.phone,
+
+              inputFormatters:
+              [
+                FilteringTextInputFormatter(
+                    RegExp(r'[()\d-]{1,15}$'),
+                    allow: true),
+              ],
+              validator: (value) => _validatePhoneNumer(value)
+                  ? null
+                  : 'Phone number must be entered as (###)###-####',
             ),
             SizedBox(height: 10),
             TextFormField(
@@ -165,5 +176,10 @@ class _RegisterFormPageState extends State<RegisterFormPage> {
     } else {
       return null;
     }
+  }
+
+  bool _validatePhoneNumer(String? input) {
+    final _phoneExp = RegExp(r'^\(\d\d\d\)\d\d\d\-\d\d\d\d$');
+    return _phoneExp.hasMatch(input!);
   }
 }
