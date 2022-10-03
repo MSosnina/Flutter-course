@@ -19,6 +19,9 @@ class _RegisterFormPageState extends State<RegisterFormPage> {
   final _passController = TextEditingController();
   final _confirmPassController = TextEditingController();
 
+  List<String> _countries = ['Russia', 'Turkey', 'USA', 'France'];
+  String? _selectedCountry;
+
   @override
   void dispose() {
     _nameController.dispose();
@@ -83,11 +86,8 @@ class _RegisterFormPageState extends State<RegisterFormPage> {
                     borderSide: BorderSide(color: Colors.blue, width: 2)),
               ),
               keyboardType: TextInputType.phone,
-
-              inputFormatters:
-              [
-                FilteringTextInputFormatter(
-                    RegExp(r'[()\d-]{1,15}$'),
+              inputFormatters: [
+                FilteringTextInputFormatter(RegExp(r'[()\d-]{1,15}$'),
                     allow: true),
               ],
               validator: (value) => _validatePhoneNumer(value)
@@ -96,12 +96,41 @@ class _RegisterFormPageState extends State<RegisterFormPage> {
             ),
             SizedBox(height: 10),
             TextFormField(
-                controller: _emailController,
-                decoration: InputDecoration(
-                  labelText: 'Email Address',
-                  hintText: 'Enter an email address',
-                  icon: Icon(Icons.mail),
-                )),
+              controller: _emailController,
+              decoration: InputDecoration(
+                labelText: 'Email Address',
+                hintText: 'Enter an email address',
+                icon: Icon(Icons.mail),
+              ),
+              keyboardType: TextInputType.emailAddress,
+              validator: _validateEmail,
+            ),
+            SizedBox(height: 10),
+            DropdownButtonFormField(
+              decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  icon: Icon(Icons.map),
+                  labelText: 'Country?'),
+              items: _countries.map((country) {
+                return DropdownMenuItem(
+                  child: Text(country),
+                  value: country,
+                );
+              }).toList(),
+              onChanged: (data) {
+                print(data);
+                setState(
+                  () {
+                    _selectedCountry = data!;
+                  },
+                );
+              },
+              value: _selectedCountry,
+              /*validator: (val) =>
+                  val == null ? 'Please select a country' : null,
+
+              */
+            ),
             SizedBox(height: 20),
             TextFormField(
               controller: _storyController,
@@ -127,6 +156,7 @@ class _RegisterFormPageState extends State<RegisterFormPage> {
                     onPressed: () {},
                   ),
                   icon: Icon(Icons.security)),
+              validator: _validatePassword,
             ),
             SizedBox(height: 10),
             TextFormField(
@@ -139,6 +169,7 @@ class _RegisterFormPageState extends State<RegisterFormPage> {
                     onPressed: () {},
                   ),
                   icon: Icon(Icons.border_color)),
+              validator: _validatePassword,
             ),
             SizedBox(height: 15),
             TextButton(
@@ -159,11 +190,16 @@ class _RegisterFormPageState extends State<RegisterFormPage> {
 
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
+      _formKey.currentState?.save();
+
       print("Form is valid");
       print('Name: ${_nameController.text}');
       print('Phone: ${_phoneController.text}');
       print('Email: ${_emailController.text}');
+      print('Country: ${_selectedCountry}');
       print('Story: ${_storyController.text}');
+    } else {
+      print('Form is not valid! Please review and correct.');
     }
   }
 
@@ -181,5 +217,25 @@ class _RegisterFormPageState extends State<RegisterFormPage> {
   bool _validatePhoneNumer(String? input) {
     final _phoneExp = RegExp(r'^\(\d\d\d\)\d\d\d\-\d\d\d\d$');
     return _phoneExp.hasMatch(input!);
+  }
+
+  String? _validateEmail(String? value) {
+    if (value == '') {
+      return "Email cannot be empty";
+    } else if (!_emailController.text.contains("@")) {
+      return 'Invalid email address.';
+    } else {
+      return null;
+    }
+  }
+
+  String? _validatePassword(String? value) {
+    if (_passController.text.length != 8) {
+      return '8 character required for password.';
+    } else if (_confirmPassController.text != _passController.text) {
+      return 'Password does not match.';
+    } else {
+      return null;
+    }
   }
 }
