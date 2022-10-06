@@ -11,6 +11,7 @@ class _RegisterFormPageState extends State<RegisterFormPage> {
   bool _hidePass = true;
 
   final _formKey = GlobalKey<FormState>();
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   final _nameController = TextEditingController();
   final _phoneController = TextEditingController();
@@ -22,6 +23,10 @@ class _RegisterFormPageState extends State<RegisterFormPage> {
   List<String> _countries = ['Russia', 'Turkey', 'USA', 'France'];
   String? _selectedCountry;
 
+  final _nameFocus = FocusNode();
+  final _phoneFocus = FocusNode();
+  final _passFocus = FocusNode();
+
   @override
   void dispose() {
     _nameController.dispose();
@@ -30,13 +35,22 @@ class _RegisterFormPageState extends State<RegisterFormPage> {
     _storyController.dispose();
     _passController.dispose();
     _confirmPassController.dispose();
-
+    _nameFocus.dispose();
+    _phoneFocus.dispose();
+    _passFocus.dispose();
     super.dispose();
+  }
+
+  void _fieldFocusChange(
+      BuildContext context, FocusNode currentFocus, FocusNode nextFocus) {
+    currentFocus.unfocus();
+    FocusScope.of(context).requestFocus(nextFocus);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         title: Text('Register Form'),
         centerTitle: true,
@@ -47,6 +61,11 @@ class _RegisterFormPageState extends State<RegisterFormPage> {
           padding: EdgeInsets.all(16),
           children: [
             TextFormField(
+              focusNode: _nameFocus,
+              autofocus: true,
+              onFieldSubmitted: (_) {
+                _fieldFocusChange(context, _nameFocus, _phoneFocus);
+              },
               controller: _nameController,
               decoration: InputDecoration(
                 labelText: 'Full Name *',
@@ -68,6 +87,10 @@ class _RegisterFormPageState extends State<RegisterFormPage> {
             ),
             SizedBox(height: 10),
             TextFormField(
+              focusNode: _phoneFocus,
+              onFieldSubmitted: (_) {
+                _fieldFocusChange(context, _phoneFocus, _passFocus);
+              },
               controller: _phoneController,
               decoration: InputDecoration(
                 labelText: 'Phone Number *',
@@ -147,6 +170,7 @@ class _RegisterFormPageState extends State<RegisterFormPage> {
             ),
             SizedBox(height: 10),
             TextFormField(
+              focusNode: _passFocus,
               controller: _passController,
               decoration: InputDecoration(
                   labelText: 'Password *',
@@ -199,7 +223,7 @@ class _RegisterFormPageState extends State<RegisterFormPage> {
       print('Country: ${_selectedCountry}');
       print('Story: ${_storyController.text}');
     } else {
-      print('Form is not valid! Please review and correct.');
+      _showMessage('Form is not valid! Please review and correct.');
     }
   }
 
@@ -237,5 +261,16 @@ class _RegisterFormPageState extends State<RegisterFormPage> {
     } else {
       return null;
     }
+  }
+
+  void _showMessage(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        duration: Duration(seconds: 5),
+        backgroundColor: Colors.red,
+        content: Text(
+          message,
+          style: TextStyle(
+              color: Colors.black, fontWeight: FontWeight.w600, fontSize: 18),
+        )));
   }
 }
