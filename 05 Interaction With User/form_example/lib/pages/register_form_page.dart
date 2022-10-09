@@ -71,9 +71,14 @@ class _RegisterFormPageState extends State<RegisterFormPage> {
                 labelText: 'Full Name *',
                 hintText: 'What do people call you?',
                 prefixIcon: Icon(Icons.person),
-                suffixIcon: Icon(
-                  Icons.delete_outline,
-                  color: Colors.red,
+                suffixIcon: GestureDetector(
+                  onTap: () {
+                    _nameController.clear();
+                  },
+                  child: Icon(
+                    Icons.delete_outline,
+                    color: Colors.red,
+                  ),
                 ),
                 enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(20)),
@@ -97,9 +102,14 @@ class _RegisterFormPageState extends State<RegisterFormPage> {
                 hintText: 'Where we can reach you?',
                 helperText: 'Phone format: (XXX)XXX-XXXX',
                 prefixIcon: Icon(Icons.call),
-                suffixIcon: Icon(
-                  Icons.delete_outline,
-                  color: Colors.red,
+                suffixIcon: GestureDetector(
+                  onLongPress: () {
+                    _phoneController.clear();
+                  },
+                  child: Icon(
+                    Icons.delete_outline,
+                    color: Colors.red,
+                  ),
                 ),
                 enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(20)),
