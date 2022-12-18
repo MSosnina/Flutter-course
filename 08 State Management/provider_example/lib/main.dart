@@ -24,6 +24,7 @@ class MyApp extends StatelessWidget {
           FutureProvider<List<User>>(
               create: (_) async => UserProvider().loadUserData(),
               initialData: []),
+          StreamProvider(create: (_) => EventProvider().intStream(), initialData: 0),
         ],
         child: DefaultTabController(
           length: 3,
@@ -142,14 +143,26 @@ class MyUserPage extends StatelessWidget {
 class MyEventPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-          child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Text('MyEventPage', style: TextStyle(fontSize: 20)),
-        ],
-      )),
+    var _value = Provider.of<int>(context);
+    return Container(
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text(
+              'StreamProvider Example',
+              style: TextStyle(fontSize: 20),
+            ),
+            SizedBox(
+              height: 50,
+            ),
+            Text(
+              '${_value.toString()}',
+              style: Theme.of(context).textTheme.displayMedium,
+            )
+          ],
+        ),
+      ),
     );
   }
 }
@@ -206,5 +219,12 @@ class UserProvider {
     users = UserList.fromJson(jsonUserData['users']).users;
     print('done loading user!' /*+ jsonEncode(users) */);
     return users;
+  }
+}
+
+class EventProvider{
+  Stream<int> intStream(){
+    Duration interval = Duration(seconds: 2);
+    return Stream<int>.periodic(interval, (int _count) => _count++);
   }
 }
