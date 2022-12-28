@@ -67,14 +67,8 @@ class WidgetBody extends State<MyStatefulWidget> {
           Switch(
               value: light,
               onChanged: (bool value) {
-                setState(() {
-                  light = value;
-                }
-                );
-                print('1');
-                _state._randomColor;
-                print('${_state.colorValue}');
-                print('${_state.i}');
+                setState(() => light = value);
+                _state._randomColor();
               })
         ]));
   }
@@ -82,14 +76,12 @@ class WidgetBody extends State<MyStatefulWidget> {
 
 class ColorProvider extends ChangeNotifier {
   Color _color = Color(0xFF000000);
-  int i =0;
 
   Color get colorValue => _color;
 
   void _randomColor() {
-    _color =  Color(0xAA123456);
-    i= 5;
-    //    Color((math.Random().nextDouble() * 0xFFFFFF).toInt()).withOpacity(1.0);
+    _color =
+        Color((math.Random().nextDouble() * 0xFFFFFF).toInt()).withOpacity(1.0);
     notifyListeners();
   }
 }
