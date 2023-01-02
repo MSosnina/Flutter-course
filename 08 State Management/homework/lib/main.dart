@@ -12,7 +12,6 @@ class MyApp extends StatelessWidget {
 
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     bool light = true;
@@ -27,10 +26,7 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider<ColorProvider>.value(value: ColorProvider()),
         ],
         child: Scaffold(
-          appBar: AppBar(
-            title: Text("Homework Provider"),
-            centerTitle: true,
-          ),
+          appBar: AppBarStatefulWidget(),
           body: const MyStatefulWidget(),
         ),
       ),
@@ -38,11 +34,39 @@ class MyApp extends StatelessWidget {
   }
 }
 
+class AppBarStatefulWidget extends StatefulWidget
+    implements PreferredSizeWidget {
+  AppBarStatefulWidget({Key? key})
+      : preferredSize = Size.fromHeight(kToolbarHeight),
+        super(key: key);
+
+  final Size preferredSize;
+
+  @override
+  State<AppBarStatefulWidget> createState() => WidgetAppBar();
+}
+
 class MyStatefulWidget extends StatefulWidget {
   const MyStatefulWidget({Key? key}) : super(key: key);
 
   @override
   State<MyStatefulWidget> createState() => WidgetBody();
+}
+
+class WidgetAppBar extends State<AppBarStatefulWidget> {
+  //@override
+
+  Widget build(BuildContext context) {
+    ColorProvider _state = Provider.of<ColorProvider>(context);
+
+    return AppBar(
+      title: Text(
+        "Homework Provider",
+        style: TextStyle(color: _state.colorValue),
+      ),
+      centerTitle: true,
+    );
+  }
 }
 
 class WidgetBody extends State<MyStatefulWidget> {
