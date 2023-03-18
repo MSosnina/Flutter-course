@@ -3,7 +3,9 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:weather_app/api/weater_api.dart';
 import 'package:weather_app/models/weather_forecast_5day.dart';
 import 'package:weather_app/widgets/city_view.dart';
+import 'package:weather_app/widgets/detail_view.dart';
 import 'package:weather_app/widgets/temp_view.dart';
+import 'package:weather_app/widgets/bottom_list_view.dart';
 
 class WeatherForecastScreen extends StatefulWidget {
   @override
@@ -53,6 +55,10 @@ class _WeatherForecastScreen extends State<WeatherForecastScreen> {
                     CityView(snapshort: snapshot,),
                     SizedBox(height: 50,),
                     TempView(snapshot: snapshot),
+                    SizedBox(height: 50,),
+                    DetailView(snapshot: snapshot),
+                    SizedBox(height: 50,),
+                    BottomListView(snapshot: snapshot),
                   ]);
                 } else {
                   return Center(
