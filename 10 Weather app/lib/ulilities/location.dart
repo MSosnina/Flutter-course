@@ -14,8 +14,6 @@ class Location{
         if (permission == LocationPermission.deniedForever) {
           return Future.error('Location Not Available');
         }
-      } else {
-        throw Exception('Error');
       }
 
       Position position = await Geolocator.getCurrentPosition().timeout(Duration(seconds: 15));
